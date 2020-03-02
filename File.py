@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import requests
-import xlsxwriter
 import xlwt
 import unicodedata
 from bs4 import BeautifulSoup
@@ -11,17 +10,13 @@ class check:
         bs = BeautifulSoup(html, 'lxml')
         return bs
 
-    def hasNumbers(inputString):
-        return any(char.isdigit() for char in inputString)
-
-
 workbook = xlwt.Workbook(encoding="utf-8")
 sheet = workbook.add_sheet('Sheet1')
 
 obj = check()
 bs = obj.returnHtml('https://obo.genaud.net/backmatter/indexes/sutta/sutta_toc.htm?fbclid=IwAR1qUeiUyochbcaE_dtpC7_5oMzd8bag8mbgOcCt_ZJWGGWLhcypt4pplxI')
 mainheaders = bs.find_all('h4')
-row =2
+row = 2
 column = 0
 
 for header in mainheaders :
@@ -55,7 +50,6 @@ for header in mainheaders :
         for subheader in subPageHeaders :
             subName = subheader.text.split(',')[0]
             subNameEdit = unicodedata.normalize('NFKD', subName).encode('ascii','ignore')
-            #edited = unicodedata.normalize('NFKD', subName).encode('ascii','ignore')
             stringList = subName.split('. ')
             newNumber = int(stringList[0])
 
@@ -142,27 +136,7 @@ for header in mainheaders :
         for text in texts:
             sheet.write(row, column+2, unicodedata.normalize('NFKD', text).encode('ascii','ignore'))
             row+=1
-        
-             
-                
-                
-
-                
-                
             
-
-             
-
-        if(str(header.find('a',{'id':'kd'})) != 'None'):
-            KuddakaName = 'Kuddhaka Nikāya'
-        elif (str(header.find('a',{'id':'ABHI'})) != 'None'):
-            AbhidhammaName = 'Abhidhamma Piṭaka'
-        #print(header.findNext('p'))
-    elif (str(header.find('a',{'id':'KN'})) != 'None'):
-        name = 'Kuddhaka Nikāya'
-    elif (str(header.find('a',{'id':'ABHI'})) != 'None'):
-        name = 'Abhidhamma Piṭaka'
-
 workbook.save('excel.xls')
 
 
